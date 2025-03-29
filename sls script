@@ -1,1 +1,55 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
+local Window = Fluent:CreateWindow({
+    Title = "Bombo Hub v1",
+    SubTitle = "by bombo",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
+
+local Tabs = {
+Main = Window:AddTab({ Title = "Super League soccer", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+do
+    Fluent:Notify({
+        Title = "Notification",
+        Content = "Welcome to Bombo Hub!",
+        SubContent = "Enjoy!", -- Optional
+        Duration = 5 -- Set to nil to make the notification not disappear
+    })
+
+    Tabs.Main:AddButton({
+        Title = "Hitbox v1",
+        Description = "universal hitbox",
+        Callback = function()
+            Window:Dialog({
+                Title = "Alert ⚠️",
+                Content = "Once executed cant be undo",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+loadstring(game:HttpGet("https://pastebin.com/raw/0vYAmhTx"))()    print("Confirmed the dialog.")
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+    end
