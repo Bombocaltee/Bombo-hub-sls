@@ -124,7 +124,7 @@ local Slider = Tabs.Main:AddSlider("Slider", {
         Min = 0,
         Max = 150,
         Rounding = 1,
-        Callback = function(Value)
+        Onchanged = function(Value)
 function hitbox(addAmount)
 	local hitboxPart = workspace:FindFirstChild("Hitbox")
 	if hitboxPart and hitboxPart:IsA("BasePart") then
