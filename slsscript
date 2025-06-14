@@ -157,6 +157,9 @@ local function updateHitboxes(addAmount)
 end
 
             print("Slider was changed:", Value)
+slider.OnChanged:Connect(function(value)
+	updateHitboxes(value) -- This will add `value` to the original hitbox
+end)
         end
     })
 
