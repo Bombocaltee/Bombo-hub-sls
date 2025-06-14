@@ -144,11 +144,6 @@ function hitbox(addAmount)
 		end)
 	end
 end
-            print("Slider was changed:", Value)
-
-slider.OnChanged:Connect(function(value)
-	hitbox(value)
-end)
 
         end
     })
