@@ -82,4 +82,82 @@ end
 
     Options.MyToggle:SetValue(false)
 
+Tabs.Main:AddButton({
+        Title = "jump power",
+        Description = "loop jump power to perfect",
+        Callback = function()
+            Window:Dialog({
+                Title = "Alert ",
+                Content = "Please confirm before you execute it",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function(value)
+local plr = game.Players.LocalPlayer
+local char = plr.Character or plr.CharacterAdded:Wait()
+local hum = char:WaitForChild("Humanoid")
+
+hum.UseJumpPower = true
+
+while true do
+    hum.JumpPower = 54.5
+    task.wait(1)
+end
+                            print("Confirmed the dialog.")
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+local Slider = Tabs.Main:AddSlider("Slider", {
+        Title = "Hitbox extender",
+        Description = "increase hitbox",
+        Default = 1,
+        Min = 0,
+        Max = 150,
+        Rounding = 1,
+        Callback = function(Value)
+-- Adjust hitboxes by adding to original size
+local function updateHitboxes(addAmount)
+	for _, plrObj in pairs(game.Players:GetPlayers()) do
+		if plrObj ~= game.Players.LocalPlayer then
+			local char = plrObj.Character
+			if char and char:FindFirstChild("HumanoidRootPart") then
+				local root = char.HumanoidRootPart
+				pcall(function()
+					-- Get the original/default size
+					local defaultSize = Vector3.new(4.1, 4.1, 4.1) -- Use known or safe default
+					
+					-- Optional: try to use their current size if larger
+					if root.Size.X > 0 and root.Size.X < 20 then
+						defaultSize = root.Size
+					end
+					
+					-- Add slider value to each axis
+					local finalSize = defaultSize + Vector3.new(addAmount, addAmount, addAmount)
+					
+					-- Apply hitbox changes
+					root.Size = finalSize
+					root.Material = Enum.Material.Glass
+					root.Transparency = 0.6
+					root.BrickColor = BrickColor.White()
+					root.CanCollide = false
+				end)
+			end
+		end
+	end
+end
+
+            print("Slider was changed:", Value)
+        end
+    })
+
     end
