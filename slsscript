@@ -52,4 +52,34 @@ loadstring(game:HttpGet("https://pastebin.com/raw/0vYAmhTx"))()    print("Confir
         end
     })
 
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Infinite stamina", Default = false })
+
+    Toggle:OnChanged(function(value)
+local Knit = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"))
+
+
+repeat task.wait() until Knit.SharedInterfaceStates and Knit.SharedInterfaceStates.Stamina
+local Stamina = Knit.SharedInterfaceStates.Stamina
+
+
+task.spawn(function()
+    while true do
+        Stamina.Amount:set(100)
+        task.wait(0.03)
+    end
+end)
+
+
+local suc, controller = pcall(function()
+    return Knit.GetController("StaminaController")
+end)
+
+if suc and controller and controller.Consume then
+    controller.Consume = function(_, _) return true end
+end
+        print("Toggle changed:", Options.MyToggle.Value)
+    end)
+
+    Options.MyToggle:SetValue(false)
+
     end
