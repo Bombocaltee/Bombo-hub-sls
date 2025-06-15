@@ -52,9 +52,10 @@ loadstring(game:HttpGet("https://pastebin.com/raw/0vYAmhTx"))()    print("Confir
         end
     })
 
-local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Infinite stamina", Default = false })
-
-    Toggle:OnChanged(function(value)
+Tabs.Main:AddButton({
+        Title = "infinite stamina",
+        Description = "as the title",
+        Callback = function(value)
 local Knit = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"))
 
 
@@ -77,10 +78,10 @@ end)
 if suc and controller and controller.Consume then
     controller.Consume = function(_, _) return true end
 end
-        print("Toggle changed:", Options.MyToggle.Value)
-    end)
 
-    Options.MyToggle:SetValue(false)
+end
+
+})
 
 Tabs.Main:AddButton({
         Title = "jump power",
