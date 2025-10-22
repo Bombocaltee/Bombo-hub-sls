@@ -56,32 +56,35 @@ Tabs.Main:AddButton({
         Title = "infinite stamina",
         Description = "as the title",
         Callback = function(value)
-local Knit = require(game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"))
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Fusion = require(ReplicatedStorage.Packages:WaitForChild("Fusion"))
+local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
+local MovementDefaults = require(ReplicatedStorage.Shared.Defaults:WaitForChild("Movement"))
+local SharedInterfaceStates = require(ReplicatedStorage.Shared:WaitForChild("SharedInterfaceStates"))
 
-
-repeat task.wait() until Knit.SharedInterfaceStates and Knit.SharedInterfaceStates.Stamina
-local Stamina = Knit.SharedInterfaceStates.Stamina
-
+local MaxStamina = MovementDefaults.Stamina.Maximum
+local StaminaAmount = SharedInterfaceStates.Stamina.Amount
+local HasInfiniteStamina = Fusion.Value(true)
 
 task.spawn(function()
-    while true do
-        Stamina.Amount:set(100)
-        task.wait(0.03)
-    end
+	if not Knit.IsRunning then
+		Knit.Start():catch(warn)
+	end
 end)
 
-
-local suc, controller = pcall(function()
-    return Knit.GetController("StaminaController")
-end)
-
-if suc and controller and controller.Consume then
-    controller.Consume = function(_, _) return true end
+local function LockFullStamina()
+	StaminaAmount:set(MaxStamina)
+	HasInfiniteStamina:set(true)
+	local observer = Fusion.Observer(StaminaAmount)
+	observer:onChange(function()
+		if HasInfiniteStamina:get() then
+			StaminaAmount:set(MaxStamina)
+		end
+	end)
 end
 
-end
+LockFullStamina()
 
-})
 
 Tabs.Main:AddButton({
         Title = "jump power",
