@@ -84,6 +84,9 @@ do
         Title = "infinite stamina",
         Description = "as the title",
         Callback = function(value)
+repeat task.wait() until Knit.IsRunning
+        repeat task.wait() until SharedInterfaceStates and SharedInterfaceStates.Stamina
+
             LockFullStamina()
             Fluent:Notify({
                 Title = "Stamina Locked",
