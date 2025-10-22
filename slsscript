@@ -1,30 +1,3 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Fusion = require(ReplicatedStorage.Packages:WaitForChild("Fusion"))
-local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
-local MovementDefaults = require(ReplicatedStorage.Shared.Defaults:WaitForChild("Movement"))
-local SharedInterfaceStates = require(ReplicatedStorage.Shared:WaitForChild("SharedInterfaceStates"))
-
-local MaxStamina = MovementDefaults.Stamina.Maximum
-local StaminaAmount = SharedInterfaceStates.Stamina.Amount
-local HasInfiniteStamina = Fusion.Value(true)
-
-task.spawn(function()
-	if not Knit.IsRunning then
-		Knit.Start():catch(warn)
-	end
-end)
-
-local function LockFullStamina()
-	StaminaAmount:set(MaxStamina)
-	HasInfiniteStamina:set(true)
-	local observer = Fusion.Observer(StaminaAmount)
-	observer:onChange(function()
-		if HasInfiniteStamina:get() then
-			StaminaAmount:set(MaxStamina)
-		end
-	end)
-end
-
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
@@ -84,8 +57,36 @@ do
         Title = "infinite stamina",
         Description = "as the title",
         Callback = function(value)
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Fusion = require(ReplicatedStorage.Packages:WaitForChild("Fusion"))
+            local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
+            local MovementDefaults = require(ReplicatedStorage.Shared.Defaults:WaitForChild("Movement"))
+            local SharedInterfaceStates = require(ReplicatedStorage.Shared:WaitForChild("SharedInterfaceStates"))
+
+            local MaxStamina = MovementDefaults.Stamina.Maximum
+            local StaminaAmount = SharedInterfaceStates.Stamina.Amount
+            local HasInfiniteStamina = Fusion.Value(true)
+
+            if not Knit.IsRunning then
+                Knit.Start():catch(warn)
+            end
+
+            repeat task.wait() until Knit.IsRunning
+            repeat task.wait() until SharedInterfaceStates and SharedInterfaceStates.Stamina
+
+            local function LockFullStamina()
+                StaminaAmount:set(MaxStamina)
+                HasInfiniteStamina:set(true)
+                local observer = Fusion.Observer(StaminaAmount)
+                observer:onChange(function()
+                    if HasInfiniteStamina:get() then
+                        StaminaAmount:set(MaxStamina)
+                    end
+                end)
+            end
 
             LockFullStamina()
+
             Fluent:Notify({
                 Title = "Stamina Locked",
                 Content = "Your stamina will now remain at maximum.",
@@ -137,7 +138,7 @@ do
         Max = 150,
         Rounding = 1,
         Onchanged = function(Value)
-            function hitbox(addAmount)
+            local function hitbox(addAmount)
                 local hitboxPart = workspace:FindFirstChild("Hitbox")
                 if hitboxPart and hitboxPart:IsA("BasePart") then
                     pcall(function()
@@ -155,5 +156,4 @@ do
             hitbox(Value)
         end
     })
-
 end
