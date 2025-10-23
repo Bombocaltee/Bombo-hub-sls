@@ -29,51 +29,32 @@ do
 
     Tabs.Main:AddButton({
         Title = "Hitbox v1",
-        Description = "universal hitbox",
+        Description = "increase hitbox",
         Callback = function()
-            Window:Dialog({
-                Title = "Alert ⚠️",
-                Content = "Once executed cant be undo",
-                Buttons = {
-                    {
-                        Title = "Confirm",
-                        Callback = function()
-                            loadstring(game:HttpGet("https://pastebin.com/raw/0vYAmhTx"))()
-                            print("Confirmed the dialog.")
-                        end
-                    },
-                    {
-                        Title = "Cancel",
-                        Callback = function()
-                            print("Cancelled the dialog.")
-                        end
-                    }
-                }
-            })
+            local hitboxPart = workspace:FindFirstChild("Hitbox")
+            if hitboxPart and hitboxPart:IsA("BasePart") then
+                local newSize = hitboxPart.Size + Vector3.new(5, 5, 5)
+                hitboxPart.Size = newSize
+                hitboxPart.Material = Enum.Material.Glass
+                hitboxPart.BrickColor = BrickColor.new("White")
+                hitboxPart.Transparency = 0.6
+                hitboxPart.CanCollide = false
+            end
         end
     })
 
     Tabs.Main:AddButton({
         Title = "infinite stamina",
-        Description = "as the title",
-        Callback = function(value)
-
+        Description = "as the titlte",
+        Callback = function()
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
             local Fusion = require(ReplicatedStorage.Packages:WaitForChild("Fusion"))
-            local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
             local MovementDefaults = require(ReplicatedStorage.Shared.Defaults:WaitForChild("Movement"))
             local SharedInterfaceStates = require(ReplicatedStorage.Shared:WaitForChild("SharedInterfaceStates"))
 
             local MaxStamina = MovementDefaults.Stamina.Maximum
             local StaminaAmount = SharedInterfaceStates.Stamina.Amount
             local HasInfiniteStamina = Fusion.Value(true)
-
-            if not Knit.IsRunning then
-                Knit.Start():catch(warn)
-            end
-
-            repeat task.wait() until Knit.IsRunning
-            repeat task.wait() until SharedInterfaceStates and SharedInterfaceStates.Stamina
 
             local function LockFullStamina()
                 StaminaAmount:set(MaxStamina)
@@ -88,73 +69,52 @@ do
 
             LockFullStamina()
 
-            Fluent:Notify({
-                Title = "Stamina Locked",
-                Content = "stamina is locked.",
-                Duration = 4
-            })
-        end
-    }}
-
-    Tabs.Main:AddButton({
-        Title = "jump power",
-        Description = "loop jump power to perfect",
-        Callback = function()
-            Window:Dialog({
-                Title = "Alert ",
-                Content = "Please confirm before you execute it",
-                Buttons = {
-                    {
-                        Title = "Confirm",
-                        Callback = function(value)
-                            local plr = game.Players.LocalPlayer
-                            local char = plr.Character or plr.CharacterAdded:Wait()
-                            local hum = char:WaitForChild("Humanoid")
-
-                            hum.UseJumpPower = true
-
-                            while true do
-                                hum.JumpPower = 54.5
-                                task.wait(1)
-                            end
-                            print("Confirmed the dialog.")
-                        end
-                    },
-                    {
-                        Title = "Cancel",
-                        Callback = function()
-                            print("Cancelled the dialog.")
-                        end
-                    }
-                }
-            })
+            task.spawn(function()
+                while true do
+                    StaminaAmount:set(MaxStamina)
+                    task.wait(0.1)
+                end
+            end)
         end
     })
 
-    local Slider = Tabs.Main:AddSlider("Slider", {
+    Tabs.Main:AddButton({
+        Title = "jump power",
+        Description = "Jump higher!",
+        Callback = function()
+            local plr = game.Players.LocalPlayer
+            local char = plr.Character or plr.CharacterAdded:Wait()
+            local hum = char:WaitForChild("Humanoid")
+
+            hum.UseJumpPower = true
+
+            task.spawn(function()
+                while true do
+                    hum.JumpPower = 54.5
+                    task.wait(1)
+                end
+            end)
+        end
+    })
+
+    Tabs.Main:AddSlider("Slider", {
         Title = "Hitbox extender",
-        Description = "increase hitbox",
+        Description = "increase hitbox size",
         Default = 1,
         Min = 0,
         Max = 150,
         Rounding = 1,
-        Onchanged = function(Value)
-            local function hitbox(addAmount)
-                local hitboxPart = workspace:FindFirstChild("Hitbox")
-                if hitboxPart and hitboxPart:IsA("BasePart") then
-                    pcall(function()
-                        local currentSize = hitboxPart.Size
-                        local newSize = currentSize + Vector3.new(addAmount, addAmount, addAmount)
-                        hitboxPart.Size = newSize
-                        hitboxPart.Material = Enum.Material.Glass
-                        hitboxPart.BrickColor = BrickColor.White()
-                        hitboxPart.Transparency = 0.6
-                        hitboxPart.CanCollide = false
-                    end)
-                end
+        OnChanged = function(Value)
+            local hitboxPart = workspace:FindFirstChild("Hitbox")
+            if hitboxPart and hitboxPart:IsA("BasePart") then
+                local baseSize = Vector3.new(1,1,1)
+                local newSize = baseSize + Vector3.new(Value, Value, Value)
+                hitboxPart.Size = newSize
+                hitboxPart.Material = Enum.Material.Glass
+                hitboxPart.BrickColor = BrickColor.White()
+                hitboxPart.Transparency = 0.6
+                hitboxPart.CanCollide = false
             end
-
-            hitbox(Value)
         end
     })
 end
