@@ -1,0 +1,160 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Bombo Hub v1",
+    SubTitle = "by bombo",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Super League soccer", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+do
+    Fluent:Notify({
+        Title = "Notification",
+        Content = "Welcome to Bombo Hub!",
+        SubContent = "Enjoy!",
+        Duration = 5
+    })
+
+    Tabs.Main:AddButton({
+        Title = "Hitbox v1",
+        Description = "universal hitbox",
+        Callback = function()
+            Window:Dialog({
+                Title = "Alert ⚠️",
+                Content = "Once executed cant be undo",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            loadstring(game:HttpGet("https://pastebin.com/raw/0vYAmhTx"))()
+                            print("Confirmed the dialog.")
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+    Tabs.Main:AddButton({
+        Title = "infinite stamina",
+        Description = "as the title",
+        Callback = function(value)
+
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Fusion = require(ReplicatedStorage.Packages:WaitForChild("Fusion"))
+            local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
+            local MovementDefaults = require(ReplicatedStorage.Shared.Defaults:WaitForChild("Movement"))
+            local SharedInterfaceStates = require(ReplicatedStorage.Shared:WaitForChild("SharedInterfaceStates"))
+
+            local MaxStamina = MovementDefaults.Stamina.Maximum
+            local StaminaAmount = SharedInterfaceStates.Stamina.Amount
+            local HasInfiniteStamina = Fusion.Value(true)
+
+            if not Knit.IsRunning then
+                Knit.Start():catch(warn)
+            end
+
+            repeat task.wait() until Knit.IsRunning
+            repeat task.wait() until SharedInterfaceStates and SharedInterfaceStates.Stamina
+
+            local function LockFullStamina()
+                StaminaAmount:set(MaxStamina)
+                HasInfiniteStamina:set(true)
+                local observer = Fusion.Observer(StaminaAmount)
+                observer:onChange(function()
+                    if HasInfiniteStamina:get() then
+                        StaminaAmount:set(MaxStamina)
+                    end
+                end)
+            end
+
+            LockFullStamina()
+
+            Fluent:Notify({
+                Title = "Stamina Locked",
+                Content = "stamina is locked.",
+                Duration = 4
+            })
+        end
+    }}
+
+    Tabs.Main:AddButton({
+        Title = "jump power",
+        Description = "loop jump power to perfect",
+        Callback = function()
+            Window:Dialog({
+                Title = "Alert ",
+                Content = "Please confirm before you execute it",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function(value)
+                            local plr = game.Players.LocalPlayer
+                            local char = plr.Character or plr.CharacterAdded:Wait()
+                            local hum = char:WaitForChild("Humanoid")
+
+                            hum.UseJumpPower = true
+
+                            while true do
+                                hum.JumpPower = 54.5
+                                task.wait(1)
+                            end
+                            print("Confirmed the dialog.")
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+    local Slider = Tabs.Main:AddSlider("Slider", {
+        Title = "Hitbox extender",
+        Description = "increase hitbox",
+        Default = 1,
+        Min = 0,
+        Max = 150,
+        Rounding = 1,
+        Onchanged = function(Value)
+            local function hitbox(addAmount)
+                local hitboxPart = workspace:FindFirstChild("Hitbox")
+                if hitboxPart and hitboxPart:IsA("BasePart") then
+                    pcall(function()
+                        local currentSize = hitboxPart.Size
+                        local newSize = currentSize + Vector3.new(addAmount, addAmount, addAmount)
+                        hitboxPart.Size = newSize
+                        hitboxPart.Material = Enum.Material.Glass
+                        hitboxPart.BrickColor = BrickColor.White()
+                        hitboxPart.Transparency = 0.6
+                        hitboxPart.CanCollide = false
+                    end)
+                end
+            end
+
+            hitbox(Value)
+        end
+    })
+end
